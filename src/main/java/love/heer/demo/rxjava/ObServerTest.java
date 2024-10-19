@@ -18,6 +18,7 @@ public class ObServerTest {
             emitter.onComplete();
         });
 
+
         // 观察者
         Observer<String> obServer = new Observer<String>() {
 
@@ -26,13 +27,15 @@ public class ObServerTest {
                 // 前置触发
                 System.out.println("onSubscribe");
                 // 取消订阅
-                d.dispose();
+//                d.dispose();
             }
 
             @Override
             public void onNext(@NonNull String s) {
+
+                long threadId = Thread.currentThread().getId();
                 // 获取发射的数据
-                System.out.println("onNext: " + s);
+                System.out.println(threadId + "-onNext: " + s);
 
             }
 
@@ -51,6 +54,24 @@ public class ObServerTest {
         // 订阅
         observable.subscribe(obServer);
 
+        // 订阅 2
+        observable.subscribe(next -> {
+
+            long threadId = Thread.currentThread().getId();
+            // 获取发射的数据
+            System.out.println(threadId + "-onNext: " + next);
+
+        }, error -> {
+            // 获取发射的异常数据
+            System.out.println("onError: " + error.getMessage());
+        });
+
+
+
+
+        long threadId = Thread.currentThread().getId();
+        // 获取发射的数据
+        System.out.println(threadId + "-main: ");
     }
 
 
